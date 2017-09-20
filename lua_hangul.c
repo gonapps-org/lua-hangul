@@ -7,8 +7,7 @@
 #include <errno.h>
 #include <err.h>
 
-void utf8_to_ucs4(char* inbuf, size_t inbufbytes, ucschar* outbuf, size_t outbufbytes)                                                                       
-{
+void utf8_to_ucs4(char* inbuf, size_t inbufbytes, ucschar* outbuf, size_t outbufbytes) {
     char* inbuftemp = inbuf;                                                                                                                                 
     char* outbuftemp = (char*)outbuf;                                                                                                                        
     size_t inbufbytesleft = inbufbytes;                                                                                                                      
@@ -24,8 +23,7 @@ void utf8_to_ucs4(char* inbuf, size_t inbufbytes, ucschar* outbuf, size_t outbuf
     if (rc != 0) fprintf(stderr, "iconv_close failed with %d\n", errno);                                                                                     
 }
 
-void ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufbytes)                                                                       
-{
+void ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufbytes) {
     char* inbuftemp = (char*)inbuf;                                                                                                                          
     char* outbuftemp = outbuf;                                                                                                                               
     size_t inbufbytesleft = inbufbytes;                                                                                                                      
@@ -92,7 +90,6 @@ int lua_hangul_ic_flush(lua_State* L) {
     ucschar* flush_string = hangul_ic_flush(hic);
     char result[4];
     ucs4_to_utf8(flush_string, sizeof(ucschar), result, sizeof(ucschar));
-warnx("flush(%s)", result);
     lua_pushstring(L, result); // * hangul_ic result
     return 1;
 }
@@ -198,12 +195,11 @@ static const struct luaL_Reg lua_hangul_ic_methods[] = {
 };
 
 int lua_hangul_ic_new(lua_State* L) {
-    lua_newtable(L); // table
+    lua_newtable(L); // hangul_ic
     HangulInputContext* hic = hangul_ic_new("2");
-    lua_pushlightuserdata(L, hic); // table hic
-    lua_setfield(L, -2, "hic"); // table
-    lua_pushvalue(L, -1); // table table
-    luaL_setfuncs(L, lua_hangul_ic_methods, 0); // table
+    lua_pushlightuserdata(L, hic); // hangul_ic hic
+    lua_setfield(L, -2, "hic"); // hangul_ic
+    luaL_setfuncs(L, lua_hangul_ic_methods, 0); // hangul_ic
     return 1;
 }
 
@@ -214,9 +210,10 @@ static const struct luaL_Reg lua_hangul_functions[] = {
 
 int luaopen_hangul(lua_State* L) {
     luaL_newmetatable(L, "lua_hangul_ic"); // lua_hangul_ic
-    lua_setfield(L, -2, "__index"); // lua_hangul_ic
     lua_pushvalue(L, -1); // lua_hangul_ic lua_hangul_ic
+    lua_setfield(L, -2, "__index"); // lua_hangul_ic
     luaL_setfuncs(L, lua_hangul_ic_methods, 0); // lua_hangul_ic
-    luaL_newlib(L, lua_hangul_functions);
+    lua_pop(L, 1); //
+    luaL_newlib(L, lua_hangul_functions); // library
     return 1;
 }
