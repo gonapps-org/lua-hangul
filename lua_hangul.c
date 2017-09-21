@@ -9,34 +9,10 @@
 #include <hangul.h>
 #include <iconv.h>
 #include <locale.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <err.h>
-
-int utf8_to_ucs4(char* inbuf, size_t inbufbytes, ucschar* outbuf, size_t outbufbytes) {
-    char* inbuftemp = inbuf;
-    char* outbuftemp = (char*)outbuf;
-    size_t inbufbytesleft = inbufbytes;
-    size_t outbufbytesleft = outbufbytes;
-
-    iconv_t cd = iconv_open("UCS-4LE", "UTF-8");
-    if(cd == (iconv_t) - 1) {
-        fprintf(stderr, "iconv_open failed with %d\n", errno);
-        return -1;
-    }
-
-    int rc = iconv(cd, &inbuftemp, &inbufbytesleft, &outbuftemp, &outbufbytesleft);
-    if(rc == -1) {
-        fprintf(stderr, "LINE %d: iconv failed with -1. errno is %d: %s\n", __LINE__, errno, strerror(errno));
-        return -1;
-    }
-
-    rc = iconv_close(cd);
-    if(rc != 0) {
-        fprintf(stderr, "iconv_close failed with %d\n", errno);
-        return -1;
-    }
-}
 
 int ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufbytes) {
     char* inbuftemp = (char*)inbuf;
@@ -61,7 +37,19 @@ int ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufb
         fprintf(stderr, "iconv_close failed with %d\n", errno);
         return -1;
     }
-    return 0;
+    return outbufbytes - outbufbytesleft;
+}
+
+int lua_ucs4_to_utf8(lua_State* L) {
+    // ucs4String
+    size_t ucs4StringLength;
+    ucschar* ucs4String = lua_touserdata(L, -1);
+    ucs4StringLength = strlen((char*)ucs4String);
+    char* utf8String = malloc(ucs4StringLength);
+    ucs4_to_utf8(ucs4String, ucs4StringLength, utf8String, ucs4StringLength);
+    lua_pushstring(L, utf8String);
+    free(utf8String);
+    return 1; // ucs4String utf8String
 }
 
 int lua_hangul_ic_process(lua_State* L) {
