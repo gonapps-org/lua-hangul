@@ -67,7 +67,7 @@ int ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufb
 int lua_hangul_ic_process(lua_State* L) {
     // lhic ascii
     if(lua_gettop(L) != 2)
-        lua_error("Expected 2 parameters");
+        luaL_error(L, "Expected 2 parameters");
     lua_getfield(L, -2, "c_object"); // lhic ascii hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic ascii
@@ -79,7 +79,7 @@ int lua_hangul_ic_process(lua_State* L) {
 int lua_hangul_ic_get_preedit_string(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Expected 1 parameter");
+        luaL_error(L, "Expected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
@@ -93,7 +93,7 @@ int lua_hangul_ic_get_preedit_string(lua_State* L) {
 int lua_hangul_ic_get_commit_string(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
@@ -107,7 +107,7 @@ int lua_hangul_ic_get_commit_string(lua_State* L) {
 int lua_hangul_ic_reset(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
@@ -118,7 +118,7 @@ int lua_hangul_ic_reset(lua_State* L) {
 int lua_hangul_ic_flush(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
@@ -132,7 +132,7 @@ int lua_hangul_ic_flush(lua_State* L) {
 int lua_hangul_ic_backspace(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
@@ -143,7 +143,7 @@ int lua_hangul_ic_backspace(lua_State* L) {
 int lua_hangul_ic_is_empty(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
@@ -154,7 +154,7 @@ int lua_hangul_ic_is_empty(lua_State* L) {
 int lua_hangul_ic_has_choseong(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
@@ -165,7 +165,7 @@ int lua_hangul_ic_has_choseong(lua_State* L) {
 int lua_hangul_ic_has_jungseong(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic 
@@ -176,7 +176,7 @@ int lua_hangul_ic_has_jungseong(lua_State* L) {
 int lua_hangul_ic_has_jongseong(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
@@ -205,7 +205,7 @@ int lua_hangul_ic_set_option(lua_State* L) {
 int lua_hangul_ic_select_keyboard(lua_State* L) {
     // lhic id
     if(lua_gettop(L) != 2)
-        lua_error("Expect 2 parameters");
+        luaL_error(L, "Expect 2 parameters");
     lua_getfield(L, -2, "c_object"); // lhic id hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic id
@@ -217,7 +217,7 @@ int lua_hangul_ic_select_keyboard(lua_State* L) {
 int lua_hangul_ic_is_transliteration(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
-        lua_error("Exepected 1 parameter");
+        luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
