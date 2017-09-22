@@ -205,6 +205,17 @@ static int lua_hangul_ic_is_transliteration(lua_State* L) {
     return 1;
 }
 
+static int lua_hangul_ic_delete(lua_State* L) {
+    // lhic
+    if(lua_gettop(L) != 1)
+        luaL_error(L, "Exepected 1 parameter");
+    lua_getfield(L, -1, "c_object"); // lhic hic
+    HangulInputContext* hic = lua_touserdata(L, -1);
+    lua_pop(L, 1); // lhic
+    hangul_ic_delete(hic);
+    return 0;
+}
+
 static const struct luaL_Reg lua_hangul_ic_methods[] = {
     {"process", lua_hangul_ic_process},
     {"get_preedit_string", lua_hangul_ic_get_preedit_string},
@@ -212,7 +223,7 @@ static const struct luaL_Reg lua_hangul_ic_methods[] = {
     {"reset", lua_hangul_ic_reset},
     {"flush", lua_hangul_ic_flush},
     {"backspace", lua_hangul_ic_backspace},
-    {"empty", lua_hangul_ic_is_empty},
+    {"is_empty", lua_hangul_ic_is_empty},
     {"has_choseong", lua_hangul_ic_has_choseong},
     {"has_jungseong", lua_hangul_ic_has_jungseong},
     {"has_jongseong", lua_hangul_ic_has_jongseong},
@@ -220,6 +231,7 @@ static const struct luaL_Reg lua_hangul_ic_methods[] = {
 //    {"set_option", lua_hangul_ic_set_option},
     {"select_keyboard", lua_hangul_ic_select_keyboard},
     {"is_transliteration", lua_hangul_ic_is_transliteration},
+    {"delete", lua_hangul_ic_delete},
     {NULL, NULL}
 };
 
