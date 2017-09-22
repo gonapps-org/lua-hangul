@@ -14,7 +14,7 @@
 #include <errno.h>
 #include <err.h>
 
-int ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufbytes) {
+static int ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufbytes) {
     char* inbuftemp = (char*)inbuf;
     char* outbuftemp = outbuf;
     size_t inbufbytesleft = inbufbytes;
@@ -37,62 +37,56 @@ int ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufb
         fprintf(stderr, "iconv_close failed with %d\n", errno);
         return -1;
     }
+
     return outbufbytes - outbufbytesleft;
 }
 
-int lua_ucs4_to_utf8(lua_State* L) {
+static int lua_ucs4_to_utf8(lua_State* L) {
     // ucs4String
-    size_t ucs4StringLength;
+    size_t ucs4StringSize;
     ucschar* ucs4String = lua_touserdata(L, -1);
-    ucs4StringLength = strlen((char*)ucs4String);
-    char* utf8String = malloc(ucs4StringLength);
-    ucs4_to_utf8(ucs4String, ucs4StringLength, utf8String, ucs4StringLength);
-    lua_pushstring(L, utf8String);
+    ucs4StringSize = strlen((char*)ucs4String) * sizeof(ucschar);
+    char* utf8String = calloc(ucs4StringSize, 1);
+    ucs4_to_utf8(ucs4String, ucs4StringSize, utf8String, ucs4StringSize);
+    lua_pushstring(L, utf8String); // ucs4String utf8String
     free(utf8String);
     return 1; // ucs4String utf8String
 }
 
-int lua_hangul_ic_process(lua_State* L) {
+static int lua_hangul_ic_process(lua_State* L) {
     // lhic ascii
     if(lua_gettop(L) != 2)
         luaL_error(L, "Expected 2 parameters");
     lua_getfield(L, -2, "c_object"); // lhic ascii hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic ascii
-    int ascii = lua_tointeger(L, -1);
-    lua_pushboolean(L, hangul_ic_process(hic, ascii)); // lhic ascii result
+    lua_pushboolean(L, hangul_ic_process(hic, lua_tointeger(L, -1))); // lhic ascii result
     return 1;
 }
 
-int lua_hangul_ic_get_preedit_string(lua_State* L) {
+static int lua_hangul_ic_get_preedit_string(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Expected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
-    ucschar* preedit_string = hangul_ic_get_preedit_string(hic);
-    char result[4];
-    ucs4_to_utf8(preedit_string, sizeof(ucschar), result, sizeof(ucschar));
-    lua_pushstring(L, result); // lhic result
+    lua_pushlightuserdata(L, hangul_ic_get_preedit_string(hic)); // lhic result
     return 1;
 }
 
-int lua_hangul_ic_get_commit_string(lua_State* L) {
+static int lua_hangul_ic_get_commit_string(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
-    ucschar* commit_string = hangul_ic_get_commit_string(hic);
-    char result[4];
-    ucs4_to_utf8(commit_string, sizeof(ucschar), result, sizeof(ucschar));
-    lua_pushstring(L, result); // lhic result
+    lua_pushlightuserdata(L, hangul_ic_get_commit_string(hic)); // lhic result
     return 1;
 }
 
-int lua_hangul_ic_reset(lua_State* L) {
+static int lua_hangul_ic_reset(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
@@ -103,21 +97,18 @@ int lua_hangul_ic_reset(lua_State* L) {
     return 0;
 }
 
-int lua_hangul_ic_flush(lua_State* L) {
+static int lua_hangul_ic_flush(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
-    ucschar* flush_string = hangul_ic_flush(hic);
-    char result[4];
-    ucs4_to_utf8(flush_string, sizeof(ucschar), result, sizeof(ucschar));
-    lua_pushstring(L, result); // lhic result
+    lua_pushlightuserdata(L, hangul_ic_flush(hic)); // lhic result
     return 1;
 }
 
-int lua_hangul_ic_backspace(lua_State* L) {
+static int lua_hangul_ic_backspace(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
@@ -128,7 +119,7 @@ int lua_hangul_ic_backspace(lua_State* L) {
     return 1;
 }
 
-int lua_hangul_ic_is_empty(lua_State* L) {
+static int lua_hangul_ic_is_empty(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
@@ -139,7 +130,7 @@ int lua_hangul_ic_is_empty(lua_State* L) {
     return 1;
 }
 
-int lua_hangul_ic_has_choseong(lua_State* L) {
+static int lua_hangul_ic_has_choseong(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
@@ -150,7 +141,7 @@ int lua_hangul_ic_has_choseong(lua_State* L) {
     return 1;
 }
 
-int lua_hangul_ic_has_jungseong(lua_State* L) {
+static int lua_hangul_ic_has_jungseong(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
@@ -161,7 +152,7 @@ int lua_hangul_ic_has_jungseong(lua_State* L) {
     return 1;
 }
 
-int lua_hangul_ic_has_jongseong(lua_State* L) {
+static int lua_hangul_ic_has_jongseong(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
@@ -190,7 +181,8 @@ int lua_hangul_ic_set_option(lua_State* L) {
     return 0;
 }
 */
-int lua_hangul_ic_select_keyboard(lua_State* L) {
+
+static int lua_hangul_ic_select_keyboard(lua_State* L) {
     // lhic id
     if(lua_gettop(L) != 2)
         luaL_error(L, "Expect 2 parameters");
@@ -202,7 +194,7 @@ int lua_hangul_ic_select_keyboard(lua_State* L) {
     return 0;
 }
 
-int lua_hangul_ic_is_transliteration(lua_State* L) {
+static int lua_hangul_ic_is_transliteration(lua_State* L) {
     // lhic
     if(lua_gettop(L) != 1)
         luaL_error(L, "Exepected 1 parameter");
@@ -231,7 +223,7 @@ static const struct luaL_Reg lua_hangul_ic_methods[] = {
     {NULL, NULL}
 };
 
-int lua_hangul_ic_new(lua_State* L) {
+static int lua_hangul_ic_new(lua_State* L) {
     // (keyboard)
     lua_newtable(L); // (keyboard) lhic
     HangulInputContext* hic;
@@ -247,6 +239,7 @@ int lua_hangul_ic_new(lua_State* L) {
 
 static const struct luaL_Reg lua_hangul_functions[] = {
     {"ic_new", lua_hangul_ic_new},
+    {"ucs4_to_utf8", lua_ucs4_to_utf8},
     {NULL, NULL}
 };
 

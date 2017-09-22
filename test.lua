@@ -3,4 +3,6 @@ local hangul_ic = hangul.ic_new()
 print(hangul_ic:process(string.byte('a')))
 print(hangul_ic:process(string.byte('k')))
 print(hangul_ic:process(string.byte('s')))
-print(hangul_ic:flush())
+local result = hangul_ic:flush()
+print(hangul.ucs4_to_utf8(result))
+
