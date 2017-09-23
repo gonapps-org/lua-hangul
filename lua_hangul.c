@@ -8,7 +8,6 @@
 #include <lauxlib.h>
 #include <hangul.h>
 #include <iconv.h>
-//#include <locale.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
