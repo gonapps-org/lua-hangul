@@ -7,4 +7,4 @@ all: build/hangul.so
 clean:
 	rm -rf build
 install:
-	cp build/hangul.so /usr/share/lua/5.3
+	cp build/hangul.so /usr/lib/lua/5.3
