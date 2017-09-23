@@ -8,11 +8,10 @@
 #include <lauxlib.h>
 #include <hangul.h>
 #include <iconv.h>
-#include <locale.h>
+//#include <locale.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <err.h>
 
 static int ucs4_to_utf8(ucschar* inbuf, size_t inbufbytes, char* outbuf, size_t outbufbytes) {
     char* inbuftemp = (char*)inbuf;
@@ -71,7 +70,10 @@ static int lua_hangul_ic_get_preedit_string(lua_State* L) {
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers" 
     lua_pushlightuserdata(L, hangul_ic_get_preedit_string(hic)); // lhic result
+    #pragma GCC diagnostic pop
     return 1;
 }
 
@@ -82,7 +84,10 @@ static int lua_hangul_ic_get_commit_string(lua_State* L) {
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers" 
     lua_pushlightuserdata(L, hangul_ic_get_commit_string(hic)); // lhic result
+    #pragma GCC diagnostic pop
     return 1;
 }
 
@@ -104,7 +109,10 @@ static int lua_hangul_ic_flush(lua_State* L) {
     lua_getfield(L, -1, "c_object"); // lhic hic
     HangulInputContext* hic = lua_touserdata(L, -1);
     lua_pop(L, 1); // lhic
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers" 
     lua_pushlightuserdata(L, hangul_ic_flush(hic)); // lhic result
+    #pragma GCC diagnostic pop
     return 1;
 }
 
