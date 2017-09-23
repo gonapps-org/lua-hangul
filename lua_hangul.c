@@ -162,25 +162,6 @@ static int lua_hangul_ic_has_jongseong(lua_State* L) {
     lua_pushboolean(L, hangul_ic_has_jongseong(hic)); // lhic result
     return 1;
 }
-/*
-int lua_hangul_ic_get_option(lua_State* L) {
-    // * hangul_ic option
-    lua_tointeger(L, -2); // 
-    HangulInputContext* hic = lua_touserdata(L, -2);
-    int option = lua_tointeger(L, -1);
-    lua_pushboolean(L, hangul_ic_get_option(L, hic, option));
-    return 1;
-}
-
-int lua_hangul_ic_set_option(lua_State* L) {
-    // * hangul_ic option value
-    HangulInputContext* hic = lua_touserdata(L, -3);
-    int option = lua_tointeger(L, -2);
-    bool value = lua_toboolean(L, -1);
-    hangul_ic_set_option(hic, option, value);
-    return 0;
-}
-*/
 
 static int lua_hangul_ic_select_keyboard(lua_State* L) {
     // lhic id
@@ -227,8 +208,6 @@ static const struct luaL_Reg lua_hangul_ic_methods[] = {
     {"has_choseong", lua_hangul_ic_has_choseong},
     {"has_jungseong", lua_hangul_ic_has_jungseong},
     {"has_jongseong", lua_hangul_ic_has_jongseong},
-//    {"get_option", lua_hangul_ic_get_option},
-//    {"set_option", lua_hangul_ic_set_option},
     {"select_keyboard", lua_hangul_ic_select_keyboard},
     {"is_transliteration", lua_hangul_ic_is_transliteration},
     {"delete", lua_hangul_ic_delete},
