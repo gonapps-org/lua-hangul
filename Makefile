@@ -6,5 +6,3 @@ build/hangul.so: lua_hangul.c
 all: build/hangul.so
 clean:
 	rm -rf build
-install:
-	cp build/hangul.so /usr/lib/lua/5.3
