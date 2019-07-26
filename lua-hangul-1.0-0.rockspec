@@ -10,7 +10,7 @@ description = {
     summary = "libhangul lua binding",
     detailed = [[]],
     homepage = "http://github.com/gonapps-org/lua-hangul",
-    license = "LGPL 2.0"
+    license = "LGPLv2"
 }
 
 dependencies = {
