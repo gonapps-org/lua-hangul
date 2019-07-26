@@ -12,8 +12,6 @@ set_target_properties(
     lua_hangul
     PROPERTIES
     C_STANDARD 11
-    VERSION ${version}
-    SOVERSION ${soversion}
     PUBLIC_HEADER "${public_headers}"
 )
 
