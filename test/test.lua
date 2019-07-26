@@ -1,3 +1,4 @@
+package.cpath = '../build/src/?.so;' .. package.cpath
 local hangul = require 'hangul'
 local hangul_ic = hangul.ic_new()
 local text = ''
